@@ -82,7 +82,7 @@ func (e *HEntry) dumpDirectly(dir string) {
 func decode(str string, fileName string) {
 	data, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
-		log.Fatal(err," fileName:", fileName)
+		log.Fatal(err, " fileName:", fileName)
 	} else {
 		ioutil.WriteFile(fileName, data, os.ModePerm)
 	}
@@ -91,7 +91,16 @@ func decode(str string, fileName string) {
 var textContentPattern = regexp.MustCompile("text|json|javascript|ecmascript|xml")
 
 func (c *HContent) writeTo(desiredFileName string) {
+
+	if 1 > len(c.Text) {
+		return
+	}
+
 	f := getNoDuplicatePath(desiredFileName)
+
+	if 1 > len(f) {
+		return
+	}
 
 	switch {
 	case strings.EqualFold(c.Encoding, "base64"):
@@ -113,6 +122,11 @@ func getNoDuplicatePath(desiredFileName string) (path string) {
 	var i int
 	for i, path = 2, desiredFileName; fileExists(path); i++ {
 
+		//no duplicate
+		if true {
+			return ""
+		}
+
 		ext := filepath.Ext(desiredFileName)
 		pathBeforeExtension := strings.TrimSuffix(desiredFileName, ext)
 
@@ -122,6 +136,9 @@ func getNoDuplicatePath(desiredFileName string) (path string) {
 }
 
 func (c *HContent) writeToFile(f *os.File) {
+	if 1 > len(c.Text) {
+		return
+	}
 	f.WriteString(c.Text)
 	f.Close()
 }
